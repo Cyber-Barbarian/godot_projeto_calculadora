@@ -1,0 +1,258 @@
+[gd_scene load_steps=3 format=3 uid="uid://democq037vnec"]
+
+[sub_resource type="GDScript" id="GDScript_x5h2x"]
+script/source = "extends Control
+@onready var display_text: Label = get_node(\"fundo/display/Label\")
+
+var numero_1: String
+var numero_2: String
+var operador: String = \"\"
+var indice_numero_atual: int = 0
+
+func _ready():
+	for button in get_tree().get_nodes_in_group(\"button\"):
+		#conectando sinal de pressionado
+	
+		#button.connect(\"pressed\", Callable(self,\"_on_button_pressed\"))
+		display_text.text = \"0\" #default
+		button.pressed.connect(_on_button_pressed_2.bind(button.text))
+	
+
+#func _on_button_pressed():
+#	print(\"botão1\") # Replace with function body.
+
+func _on_button_pressed_2(nome_do_botão:String):
+	var numero_1_int:int = int(numero_1)
+	var numero_2_int:int = int(numero_2)
+	var operacao_display:String
+	match nome_do_botão:
+		\"Reset\":
+			reset(true)
+		\"=\":
+			match operador:
+				\"+\":
+					operacao_display = str(numero_1_int + numero_2_int)
+					display_text.text = operacao_display
+					
+			match operador:
+				\"-\":
+					operacao_display = str(numero_1_int - numero_2_int)
+					display_text.text = operacao_display
+					
+			match operador:
+				\"*\":
+					operacao_display = str(numero_1_int * numero_2_int)
+					display_text.text = operacao_display
+					
+			match operador:
+				\"/\":
+					operacao_display = str(numero_1_int / numero_2_int)
+					display_text.text = operacao_display
+					
+			reset()
+			
+		\"+\":
+			change_operator(\"+\")	
+		\"-\":
+			change_operator(\"-\")
+		\"X\":
+			change_operator(\"*\")
+		\":\":
+			change_operator(\"/\")
+		_:
+			if indice_numero_atual == 0 :
+				numero_1 += nome_do_botão
+				if operador == \"\":
+					display_text.text = numero_1
+			elif indice_numero_atual == 1 :
+				numero_2 += nome_do_botão
+				display_text.text = numero_1 + \" \" + operador + \" \" + numero_2
+	#display_text.text = nome_do_botão
+	print(nome_do_botão) # Replace with function body.
+
+
+func reset(hard_reset: bool = false) -> void:
+	numero_1  = \"\"
+	numero_2 = \"\"
+	operador = \"\"
+	indice_numero_atual = 0
+	if hard_reset:
+		display_text.text = \"0\"
+	
+func change_operator(op: String)->void:
+	if numero_1 == \"\" or operador != \"\":
+		return
+	operador = op
+	indice_numero_atual = 1
+	display_text.text = numero_1 + \" \" + operador
+	
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_gjji4"]
+font_color = Color(0, 0, 0, 1)
+
+[node name="Calculadora_ex1" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_x5h2x")
+
+[node name="fundo" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -250.0
+offset_right = 150.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="display" type="ColorRect" parent="fundo"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -140.0
+offset_top = 40.0
+offset_right = 140.0
+offset_bottom = 80.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="fundo/display"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -130.0
+offset_top = -11.5
+offset_right = 130.0
+offset_bottom = 18.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "2438978237582"
+label_settings = SubResource("LabelSettings_gjji4")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ButtonsContainer" type="GridContainer" parent="fundo"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -130.0
+offset_right = 140.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 4
+
+[node name="Button1" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Reset"
+
+[node name="Button2" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "7"
+
+[node name="Button3" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "8"
+
+[node name="Button4" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "9"
+
+[node name="Button5" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = ":"
+
+[node name="Button6" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "4"
+
+[node name="Button7" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "5"
+
+[node name="Button8" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "6"
+
+[node name="Button9" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "X"
+
+[node name="Button10" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "1"
+
+[node name="Button11" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "2"
+
+[node name="Button12" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "3"
+
+[node name="Button13" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "+"
+
+[node name="Button14" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "-"
+
+[node name="Button15" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "0"
+
+[node name="Button16" type="Button" parent="fundo/ButtonsContainer" groups=["button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "="
